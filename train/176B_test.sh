@@ -2,9 +2,9 @@
 export OMP_NUM_THREADS=16
 
 DATA_PATH=/mnt/Megatron-DeepSpeed/data/zhihu_100000_text_document
-RUSH_PATH=/mnt/Megatron-DeepSpeed/176B_ft_qb_60w_en_80w
+RUSH_PATH=/mnt/Megatron-DeepSpeed/176B
 mkdir -p $RUSH_PATH
-LOAD_PATH=/mnt/Megatron-DeepSpeed/176B_ft_qb_60w_en_80w/checkpoint
+LOAD_PATH=/mnt/Megatron-DeepSpeed/176B/checkpoint
 CHECKPOINT_PATH=$RUSH_PATH/checkpoint
 TENSORBOARD_PATH=$RUSH_PATH/tensorboard
 LOGS_PATH=$RUSH_PATH/logs
