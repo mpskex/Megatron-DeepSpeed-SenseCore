@@ -4,7 +4,6 @@ export OMP_NUM_THREADS=16
 DATA_PATH=/mnt/Megatron-DeepSpeed/data/zhihu_100000_text_document
 RUSH_PATH=/mnt/Megatron-DeepSpeed/176B
 mkdir -p $RUSH_PATH
-LOAD_PATH=/mnt/Megatron-DeepSpeed/176B/checkpoint
 CHECKPOINT_PATH=$RUSH_PATH/checkpoint
 TENSORBOARD_PATH=$RUSH_PATH/tensorboard
 LOGS_PATH=$RUSH_PATH/logs
@@ -106,7 +105,7 @@ OUTPUT_ARGS=" \
 
 ZERO_STAGE=0 # important: bf16 must use z0! it implements its own zero stage 1 equivalent
 mkdir -p ds_config
-config_json="./ds_config/ds_config.$SLURM_JOB_ID.json"
+config_json="./ds_config/ds_config.$MASTER_ADDR.json"
 
 # Deepspeed figures out GAS dynamically from dynamic GBS via set_train_batch_size()
 cat <<EOT > $config_json
@@ -147,7 +146,7 @@ export CMD=" \
     $GPT_ARGS \
     $OUTPUT_ARGS \
     --save $CHECKPOINT_PATH \
-    --load $LOAD_PATH \
+    --load $CHECKPOINT_PATH \
     --data-path $DATA_PATH \
     --split 998,1,1 \
     --data-impl mmap \
@@ -158,7 +157,7 @@ export CMD=" \
 export NODE_RANK
 mkdir -p $(dirname $0)/logs
 
-ogfile=$(dirname $0)/logs/$NNODES-${GPUS_PER_NODE}-${HOSTNAME}.log
+logfile=$(dirname $0)/logs/$NNODES-${GPUS_PER_NODE}-${HOSTNAME}.log
 
 echo "SCRIPT_CMD:$CMD"
 echo "MASTER_ADDR:$MASTER_ADDR MASTER_PORT:$MASTER_PORT NNODES:$NNODES NODE_RANK:$NODE_RANK"

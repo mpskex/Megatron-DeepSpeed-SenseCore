@@ -3,7 +3,7 @@
 
 export OMP_NUM_THREADS=16
 DATA_PATH=/mnt/Megatron-DeepSpeed/data/zhihu_100000_text_document
-RUSH_PATH=/mnt/Megatron-DeepSpeed/7B1_test
+RUSH_PATH=/mnt/Megatron-DeepSpeed/7B1
 mkdir -p $RUSH_PATH
 CHECKPOINT_PATH=$RUSH_PATH/checkpoint
 TENSORBOARD_PATH=$RUSH_PATH/tensorboard
@@ -102,7 +102,7 @@ OUTPUT_ARGS=" \
 
 ZERO_STAGE=1 # important: bf16 must use z0! it implements its own zero stage 1 equivalent
 mkdir -p ds_config
-config_json="./ds_config/ds_config.$SLURM_JOB_ID.json"
+config_json="./ds_config/ds_config.$MASTER_ADDR.json"
 
 # Deepspeed figures out GAS dynamically from dynamic GBS via set_train_batch_size()
 cat <<EOT > $config_json
