@@ -88,16 +88,17 @@ GPT_ARGS=" \
 #--position-embedding-type alibi \
 # TODO: decide on efficient eval-interval + eval-iters
 
+# --save-interval $SAVE_INTERVAL \
+# --tensorboard-dir $TENSORBOARD_PATH \
+# --tensorboard-queue-size 5 \
+# --log-timers-to-tensorboard \
+# --log-batch-size-to-tensorboard \
+# --log-validation-ppl-to-tensorboard \
+
 OUTPUT_ARGS=" \
     --log-interval 1 \
-    --save-interval $SAVE_INTERVAL \
     --eval-interval 40000 \
     --eval-iters 1 \
-    --tensorboard-dir $TENSORBOARD_PATH \
-    --tensorboard-queue-size 5 \
-    --log-timers-to-tensorboard \
-    --log-batch-size-to-tensorboard \
-    --log-validation-ppl-to-tensorboard \
     "
 
 ZERO_STAGE=1 # important: bf16 must use z0! it implements its own zero stage 1 equivalent
@@ -134,6 +135,13 @@ cat <<EOT > $config_json
       "eps": 1e-8,
       "weight_decay": 1e-1
     }
+  },
+  "comms_logger": {
+    "enabled": true,
+    "verbose": false,
+    "prof_all": false,
+    "debug": false,
+    "prof_ops": ["all_reduce", "all_gather"]
   }
 }
 EOT
@@ -153,14 +161,14 @@ export LAUNCHER="python -u -m torch.distributed.launch \
     --master_port $MASTER_PORT \
     "
 
+#  --save $CHECKPOINT_PATH \
+#  --load $CHECKPOINT_PATH \
 export CMD=" \
     `pwd`/pretrain_gpt.py \
     --tensor-model-parallel-size $TP_SIZE \
     --pipeline-model-parallel-size $PP_SIZE \
     $GPT_ARGS \
     $OUTPUT_ARGS \
-    --save $CHECKPOINT_PATH \
-    --load $CHECKPOINT_PATH \
     --data-path $DATA_PATH \
     --split 998,1,1 \
     --data-impl mmap \

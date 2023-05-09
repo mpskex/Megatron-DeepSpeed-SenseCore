@@ -91,16 +91,17 @@ GPT_ARGS=" \
 #--position-embedding-type alibi \
 # TODO: decide on efficient eval-interval + eval-iters
 
+#    --save-interval $SAVE_INTERVAL \
+#    --tensorboard-dir $TENSORBOARD_PATH \
+#    --tensorboard-queue-size 5 \
+#    --log-timers-to-tensorboard \
+#    --log-batch-size-to-tensorboard \
+#    --log-validation-ppl-to-tensorboard \
+
 OUTPUT_ARGS=" \
     --log-interval 1 \
-    --save-interval $SAVE_INTERVAL \
     --eval-interval 10000 \
     --eval-iters 1 \
-    --tensorboard-dir $TENSORBOARD_PATH \
-    --tensorboard-queue-size 5 \
-    --log-timers-to-tensorboard \
-    --log-batch-size-to-tensorboard \
-    --log-validation-ppl-to-tensorboard \
     "
 
 ZERO_STAGE=0 # important: bf16 must use z0! it implements its own zero stage 1 equivalent
@@ -120,7 +121,14 @@ cat <<EOT > $config_json
     "enabled": true
   },
   "steps_per_print": 2000,
-  "wall_clock_breakdown": false
+  "wall_clock_breakdown": false,
+  "comms_logger": {
+    "enabled": true,
+    "verbose": false,
+    "prof_all": false,
+    "debug": false,
+    "prof_ops": ["all_reduce", "all_gather"]
+  }
 }
 EOT
 
@@ -132,11 +140,12 @@ DEEPSPEED_ARGS=" \
     --deepspeed-activation-checkpointing \
     "
 
+#    --master_addr $MASTER_ADDR \
+#    --master_port $MASTER_PORT \
+
 export LAUNCHER="python -u -m torch.distributed.launch \
     --nproc_per_node $GPUS_PER_NODE \
     --nnodes $NNODES \
-    --master_addr $MASTER_ADDR \
-    --master_port $MASTER_PORT \
     "
 
 export CMD=" \
