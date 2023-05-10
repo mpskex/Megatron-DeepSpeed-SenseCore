@@ -148,14 +148,15 @@ export LAUNCHER="python -u -m torch.distributed.launch \
     --nnodes $NNODES \
     "
 
+#    --save $CHECKPOINT_PATH \
+#    --load $CHECKPOINT_PATH \
+
 export CMD=" \
     `pwd`/pretrain_gpt.py \
     --tensor-model-parallel-size $TP_SIZE \
     --pipeline-model-parallel-size $PP_SIZE \
     $GPT_ARGS \
     $OUTPUT_ARGS \
-    --save $CHECKPOINT_PATH \
-    --load $CHECKPOINT_PATH \
     --data-path $DATA_PATH \
     --split 998,1,1 \
     --data-impl mmap \
