@@ -1,6 +1,6 @@
 datasets
 nltk
-numpy
+numpy<=1.24.0
 parameterized
 pybind11
 regex
