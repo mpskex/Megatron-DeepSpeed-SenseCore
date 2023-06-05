@@ -176,14 +176,13 @@ export CMD=" \
      $DEEPSPEED_ARGS \
     "
 export NODE_RANK
-mkdir -p $(dirname $0)/logs
-logfile=$(dirname $0)/logs/$NNODES-${GPUS_PER_NODE}-${HOSTNAME}.log
+mkdir -p $LOGS_PATH/$NNODES-${GPUS_PER_NODE}
+logfile=$LOGS_PATH/$NNODES-${GPUS_PER_NODE}/${HOSTNAME}.log
 
-echo "SCRIPT_CMD:$CMD"
-echo "MASTER_ADDR:$MASTER_ADDR MASTER_PORT:$MASTER_PORT NNODES:$NNODES NODE_RANK:$NODE_RANK"
-echo "LOGFILE:$logfile"
+echo "SCRIPT_CMD: $CMD"
+echo "MASTER_ADDR: $MASTER_ADDR MASTER_PORT: $MASTER_PORT NNODES: $NNODES NODE_RANK: $NODE_RANK"
+echo "LOGFILE: $logfile"
 
-logfile=$(dirname $0)/logs/$NNODES-${GPUS_PER_NODE}-${HOSTNAME}.log
 bash -c '$LAUNCHER --node_rank ${NODE_RANK} $CMD' > >(tee $logfile) 2>&1
 
 
