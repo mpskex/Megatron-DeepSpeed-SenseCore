@@ -188,6 +188,6 @@ ret=$?
 if [[ ${ret} -ne 0 ]]; then
    echo "[$(date +"%Y-%m-%d %H:%M:%S")] Training Job crashed! The onsite reservation time is 10000s"
 fi
-exit $?
+exit ${ret}
 
 
