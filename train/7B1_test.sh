@@ -183,6 +183,11 @@ echo "SCRIPT_CMD: $CMD"
 echo "MASTER_ADDR: $MASTER_ADDR MASTER_PORT: $MASTER_PORT NNODES: $NNODES NODE_RANK: $NODE_RANK"
 echo "LOGFILE: $logfile"
 
-bash -c '$LAUNCHER --node_rank ${NODE_RANK} $CMD' > >(tee $logfile) 2>&1
+bash -c '$LAUNCHER --node_rank ${NODE_RANK} $CMD' > >(tee -i $logfile) 2>&1
+ret=$?
+if [[ ${ret} -ne 0 ]]; then
+   echo "[$(date +"%Y-%m-%d %H:%M:%S")] Training Job crashed! The onsite reservation time is 10000s"
+fi
+exit $?
 
 
