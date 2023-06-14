@@ -68,8 +68,6 @@ GPT_ARGS=" \
     --max-position-embeddings $SEQ_LEN \
     --micro-batch-size $MICRO_BATCH_SIZE \
 
-    --no-masked-softmax-fusion \
-    --no-bias-dropout-fusion \
     --global-batch-size $GLOBAL_BATCH_SIZE \
     --train-samples $TRAIN_SAMPLES \
     --tokenizer-type PretrainedFromHF \
