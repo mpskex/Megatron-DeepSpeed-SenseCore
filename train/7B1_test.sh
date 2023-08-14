@@ -159,6 +159,7 @@ export LAUNCHER="python -u -m torch.distributed.launch \
     --nnodes $NNODES \
     --master_addr $MASTER_ADDR \
     --master_port $MASTER_PORT \
+    --use_env
     "
 
 #  --save $CHECKPOINT_PATH \
