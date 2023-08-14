@@ -16,7 +16,11 @@
 """Gradient clipping."""
 
 import torch
-from torch._six import inf
+# from torch._six import inf
+if int(torch.__version__.split(".")[0]) > 1:
+    from torch import inf
+else:
+    from torch._six import inf
 
 from apex.multi_tensor_apply import multi_tensor_applier
 import amp_C
