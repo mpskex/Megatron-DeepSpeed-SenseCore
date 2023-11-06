@@ -2,20 +2,27 @@
 #set -x
 
 export OMP_NUM_THREADS=16
-DATA_PATH=/mnt/Megatron-DeepSpeed/data/zhihu_100000_text_document
-RUSH_PATH=/mnt/Megatron-DeepSpeed/7B1
+date=`date -Iseconds`
+DATA_PATH=/mnt/afs/datasets/oscar-1GB_text_document
+RUSH_PATH=/mnt/afs/experiments/7B1-$date
 mkdir -p $RUSH_PATH
 CHECKPOINT_PATH=$RUSH_PATH/checkpoint
 TENSORBOARD_PATH=$RUSH_PATH/tensorboard
 LOGS_PATH=$RUSH_PATH/logs
-TOKENIZER_NAME_OR_PATH=$(pwd)/bloom_tokenizer
+# TOKENIZER_NAME_OR_PATH=$(pwd)/bloom_tokenizer
+# TOKENIZER_TYPE=PretrainedFromHF
+TOKENIZER_TYPE=GPT2BPETokenizer
+TOKENIZER_MERGE=/mnt/afs/tokenizers/gpt2/gpt2-merges.txt 
+TOKENIZER_NAME_OR_PATH=/mnt/afs/tokenizers/gpt2/gpt2-vocab.json
+# TOKENIZER_NAME_OR_PATH=
+TOKENIZER_VOCAB=/mnt/afs/tokenizers/gpt2/gpt2-vocab.json
 
 MASTER_ADDR=${1:-'127.0.0.1'}
 MASTER_PORT=${2:-'1234'}
 NNODES=${3:-'1'}
 NODE_RANK=${4:-'0'}
 
-GPUS_PER_NODE=${5:-'8'}
+GPUS_PER_NODE=${5:-'4'}
 
 TP_SIZE=1
 PP_SIZE=1
@@ -70,8 +77,10 @@ GPT_ARGS=" \
 
     --global-batch-size $GLOBAL_BATCH_SIZE \
     --train-samples $TRAIN_SAMPLES \
-    --tokenizer-type PretrainedFromHF \
+    --tokenizer-type $TOKENIZER_TYPE \
+    --vocab-file $TOKENIZER_VOCAB \
     --tokenizer-name-or-path $TOKENIZER_NAME_OR_PATH \
+    --merge-file $TOKENIZER_MERGE \
     --init-method-std 0.0048 \
     --embed-layernorm \
     --fp16 \
